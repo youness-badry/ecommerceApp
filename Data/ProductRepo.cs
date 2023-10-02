@@ -1,18 +1,19 @@
-﻿using EcommerceApplication.Entities;
+﻿using EcommerceApplication.Data.Interfaces;
+using EcommerceApplication.Entities;
 
 namespace EcommerceApplication.Data
 {
-    public class ImplProductRepo : IProductRepo
+    public class ProductRepo : IProductRepo
     {
         private readonly StoreContext _storeContext;
 
-        public ImplProductRepo(StoreContext storeContext)
+        public ProductRepo(StoreContext storeContext)
         {
             _storeContext = storeContext;
         }
         public void CreateProduct(Product product)
         {
-            throw new NotImplementedException();
+            _storeContext.Products.Add(product);
         }
 
         public void DeleteProduct(Product product)
@@ -32,7 +33,7 @@ namespace EcommerceApplication.Data
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            return (_storeContext.SaveChanges() >= 0);
         }
 
         public void updateProduct(Product product)

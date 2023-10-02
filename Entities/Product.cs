@@ -1,8 +1,31 @@
-﻿namespace EcommerceApplication.Entities
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EcommerceApplication.Entities
 {
-    public class Product
+    public class Product : BaseEntity<int>, IEntity
     {
-        public int Id { get; set; }
+        [Required]
+        [MaxLength(100)]
         public string Name { get; set; }
+
+        [Required] [MaxLength(100)]
+        public string Description { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Price { get; set; }
+
+        [Required]
+        public string PictureUrl { get; set; }
+
+        public ProductType ProductType { get; set; }
+
+        public int ProductTypeId { get; set; }
+
+        public Brand Brand { get; set; }
+
+        public int BrandId { get; set;}
+
     }
 }
