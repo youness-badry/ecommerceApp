@@ -13,6 +13,7 @@ namespace EcommerceApplication.Profiles
             CreateMap<ProductCreateDto, Product>();
             CreateMap<BrandCreateDto, Brand>();
             CreateMap<ProductTypeCreateDto, ProductType>();
+            CreateMap<UserForRegistrationDto, User>();
         }
 
 

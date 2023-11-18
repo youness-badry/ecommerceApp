@@ -12,7 +12,7 @@ namespace EcommerceApplication.Dtos
         public string Name { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(1000)]
         public string Description { get; set; }
 
         public decimal Price { get; set; }
@@ -22,6 +22,6 @@ namespace EcommerceApplication.Dtos
 
         public int ProductTypeId { get; set; }
 
-        public int ProductBrandId { get; set; }
+        public int BrandId { get; set; }
     }
 }

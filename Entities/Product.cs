@@ -10,7 +10,7 @@ namespace EcommerceApplication.Entities
         [MaxLength(100)]
         public string Name { get; set; }
 
-        [Required] [MaxLength(100)]
+        [Required] [MaxLength(1000)]
         public string Description { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
@@ -18,14 +18,11 @@ namespace EcommerceApplication.Entities
 
         [Required]
         public string PictureUrl { get; set; }
-
-        public ProductType ProductType { get; set; }
-
         public int ProductTypeId { get; set; }
-
+        public ProductType ProductType { get; set; }
+        public int BrandId { get; set; }
         public Brand Brand { get; set; }
 
-        public int BrandId { get; set;}
-
+       
     }
 }

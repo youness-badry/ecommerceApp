@@ -3,7 +3,12 @@ using EcommerceApplication.Data;
 using EcommerceApplication.Data.Interfaces;
 using EcommerceApplication.Dtos;
 using EcommerceApplication.Entities;
+using EcommerceApplication.Exceptions;
+using EcommerceApplication.RequestFeatures;
+using EcommerceApplication.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace EcommerceApplication.Controllers
 {
@@ -11,36 +16,46 @@ namespace EcommerceApplication.Controllers
     [Route("api/[Controller]")]
     public class BrandsController : ControllerBase
     {
-        private readonly IBrandRepo _brandRepo;
+        private readonly IBrandService _brandService;
         private readonly IMapper _mapper;
 
-        public BrandsController(IBrandRepo brandRepo, IMapper mapper)
+        public BrandsController(IBrandService brandService)
         {
-            _brandRepo = brandRepo;
-            _mapper = mapper;
+            _brandService = brandService;
         }
 
         [HttpGet]
-        public ActionResult<List<Brand>> GetBrands()
+        [Authorize(Roles = "Manager")]
+        public IActionResult GetBrands([FromQuery] BrandParameters brandParameters)
         {
-            var productBrands = _brandRepo.GetAllBrands();
-            return Ok(productBrands);
+            var pagedBrands = _brandService.GetBrandsWithPaging(brandParameters);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedBrands.metaData));
+            return Ok(pagedBrands.brands);
         }
 
         [HttpGet("{id}", Name = "GetBrand")]
         public ActionResult<Brand> GetBrand(int id)
         {
-            var brand = _brandRepo.GetBrandById(id);
+            var brand = _brandService.GetBrandById(id);
+            if(brand == null)
+            {
+                throw new BrandNotFoundException(id);
+            }
             return Ok(brand);
         }
+
 
         [HttpPost]
         public ActionResult<Brand> CreateBrand(BrandCreateDto brandCreateDto)
         {
-            var newBrand = _mapper.Map<Brand>(brandCreateDto);
-            _brandRepo.CreateBrand(newBrand);
-            _brandRepo.SaveChanges();
-            return CreatedAtRoute(nameof(GetBrand), new { id = newBrand.Id }, newBrand);
+            if(brandCreateDto is null)
+            {
+                return BadRequest("BrandCreateDto object is null");
+            }
+
+            var createdBrand = _brandService.CreateBrand(brandCreateDto);
+
+            return CreatedAtRoute(nameof(GetBrand), new { id = createdBrand.Id }, createdBrand);
 
         }
 

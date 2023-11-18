@@ -1,5 +1,9 @@
 using EcommerceApplication.Data;
 using EcommerceApplication.Data.Interfaces;
+using EcommerceApplication.Extensions;
+using EcommerceApplication.Middleware;
+using EcommerceApplication.Services;
+using EcommerceApplication.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceApplication
@@ -10,17 +14,34 @@ namespace EcommerceApplication
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddLogging(config =>
+            {
+                config.AddConsole();
+                config.AddDebug();
+                // Other logging providers
+
+            });
+
             // Add services to the container.
 
             builder.Services.AddControllers();
             builder.Services.AddDbContext<StoreContext>(x =>
-                x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                x.UseSqlServer(builder.Configuration
+                .GetConnectionString("DefaultConnection")));
 
             builder.Services.AddScoped<IProductRepo, ProductRepo>();
             builder.Services.AddScoped<IBrandRepo, BrandRepo>();
             builder.Services.AddScoped<IProductTypeRepo, ProductTypeRepo>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
+            builder.Services.AddScoped<IBrandService, BrandService>();
+            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
-            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            builder.Services.AddAutoMapper(typeof(Program));
+
+            builder.Services.AddAuthentication();
+            builder.Services.ConfigureIdentity();
+            builder.Services.ConfigureJWT(builder.Configuration);
 
             //To make sure HttpContextAccessor
             //is available to be injected as a dependency in DbContext.
@@ -34,6 +55,8 @@ namespace EcommerceApplication
 
             var app = builder.Build();
 
+            app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -42,6 +65,8 @@ namespace EcommerceApplication
             }
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

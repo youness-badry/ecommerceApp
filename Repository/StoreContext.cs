@@ -1,9 +1,11 @@
 ﻿using EcommerceApplication.Entities;
+using EcommerceApplication.Repository.Configuration;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceApplication.Data
 {
-    public class StoreContext : DbContext
+    public class StoreContext : IdentityDbContext<User>
     {
         private const string appUser = "SampleApplication";
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -22,6 +24,25 @@ namespace EcommerceApplication.Data
         {
             AddAuditInfo();
             return base.SaveChanges();
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
+
+            modelBuilder.Entity<Product>()
+                .HasOne(e => e.Brand)
+                .WithMany()
+                .HasForeignKey(e => e.BrandId)
+                .IsRequired();
+
+            modelBuilder.Entity<Product>()
+                .HasOne(e => e.ProductType)
+                .WithMany()
+                .HasForeignKey(e => e.ProductTypeId)
+                .IsRequired();
         }
 
         public void AddAuditInfo()
