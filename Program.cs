@@ -14,6 +14,8 @@ namespace EcommerceApplication
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.ConfigureCors();
+
             builder.Services.AddLogging(config =>
             {
                 config.AddConsole();
@@ -65,6 +67,8 @@ namespace EcommerceApplication
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
 

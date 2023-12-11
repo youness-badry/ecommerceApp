@@ -17,7 +17,9 @@ namespace EcommerceApplication.Data
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Brand> Brands { get; set; }
-        public DbSet<ProductType> ProductTypes { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<SubCategory> SubCategories { get; set; }
+        public DbSet<SubSubCategory> SubSubCategories { get; set; }
 
 
         public override int SaveChanges()

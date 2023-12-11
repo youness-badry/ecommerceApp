@@ -25,7 +25,6 @@ namespace EcommerceApplication.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Manager")]
         public IActionResult GetBrands([FromQuery] BrandParameters brandParameters)
         {
             var pagedBrands = _brandService.GetBrandsWithPaging(brandParameters);

@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EcommerceApplication.Dtos
+namespace EcommerceApplication.Entities
 {
-    public class ProductTypeCreateDto
+    public class Category : BaseEntity<int>, IEntity
     {
         [Required]
         public string Name { get; set; }
+
     }
 }

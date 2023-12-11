@@ -18,8 +18,8 @@ namespace EcommerceApplication.Entities
 
         [Required]
         public string PictureUrl { get; set; }
-        public int ProductTypeId { get; set; }
-        public ProductType ProductType { get; set; }
+        public int SubSubCategoryId { get; set; }
+        public SubSubCategory SubSubCategory { get; set; }
         public int BrandId { get; set; }
         public Brand Brand { get; set; }
 
